@@ -1,0 +1,117 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Not Yet Listed</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root { --red: #A81616; --red-dark: #7d1010; --peach: #f5c8a8; --navy: #1a1a2e; --gray: #6b7280; --border: #e8dede; --bg: #f7f4f4; --card-bg: #ffffff; --text: #1a1a2e; --sub: #6b7280; --shadow: 0 4px 24px rgba(168,22,22,.09); }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg: #181212; --card-bg: #1e1414; --text: #f0e8e8; --sub: #a89090; --border: #3a2a2a; --shadow: 0 4px 24px rgba(0,0,0,.4); } }
+  :root[data-theme="dark"] { --bg: #181212; --card-bg: #1e1414; --text: #f0e8e8; --sub: #a89090; --border: #3a2a2a; --shadow: 0 4px 24px rgba(0,0,0,.4); }
+  body { font-family: 'Inter', 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 32px 16px; }
+  .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 18px; box-shadow: var(--shadow); max-width: 520px; width: 100%; overflow: hidden; }
+  .card-header { background: linear-gradient(150deg, var(--red-dark) 0%, var(--red) 55%, #bf1a1a 100%); padding: 32px 24px 28px; text-align: center; position: relative; }
+  .card-header::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 20% 50%, rgba(255,255,255,.06) 0%, transparent 60%); pointer-events: none; }
+  .logo { font-family: 'Lora', serif; font-size: 22px; font-weight: 600; color: #fff; letter-spacing: .5px; margin-bottom: 6px; position: relative; }
+  .logo span { font-weight: 400; opacity: .85; font-size: 13px; display: block; margin-top: 2px; letter-spacing: 1.5px; text-transform: uppercase; }
+  .header-icon { font-size: 36px; margin-bottom: 10px; display: block; }
+  .card-body { padding: 32px 28px 28px; }
+  .greeting { font-size: 15px; color: var(--sub); margin-bottom: 6px; }
+  .address { font-family: 'Lora', serif; font-size: 17px; font-weight: 600; color: var(--text); margin-bottom: 20px; line-height: 1.4; }
+  .question { font-size: 15px; color: var(--text); margin-bottom: 20px; line-height: 1.6; }
+  .form-group { margin-bottom: 20px; }
+  label { display: block; font-size: 13px; font-weight: 500; color: var(--sub); margin-bottom: 8px; text-transform: uppercase; letter-spacing: .5px; }
+  input[type="date"] { width: 100%; padding: 12px 14px; border: 1.5px solid var(--border); border-radius: 10px; font-size: 15px; font-family: inherit; color: var(--text); background: var(--bg); outline: none; transition: border-color .2s; }
+  input[type="date"]:focus { border-color: var(--red); }
+  .btn-submit { width: 100%; padding: 14px; background: var(--red); color: #fff; border: none; border-radius: 10px; font-size: 15px; font-weight: 600; font-family: inherit; cursor: pointer; transition: background .2s; }
+  .btn-submit:hover { background: var(--red-dark); }
+  .btn-submit:disabled { background: var(--gray); cursor: not-allowed; }
+  .footer-note { font-size: 12px; color: var(--sub); text-align: center; margin-top: 20px; line-height: 1.6; }
+  .footer-contact { margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--border); text-align: center; font-size: 13px; color: var(--sub); }
+  .footer-contact strong { color: var(--text); }
+
+  /* Success state */
+  .success-state { display: none; text-align: center; padding: 12px 0 8px; }
+  .success-icon { font-size: 48px; margin-bottom: 12px; display: block; }
+  .success-title { font-family: 'Lora', serif; font-size: 20px; font-weight: 600; color: var(--text); margin-bottom: 10px; }
+  .success-msg { font-size: 14px; color: var(--sub); line-height: 1.6; }
+  .success-date { display: inline-block; margin-top: 12px; padding: 6px 16px; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 20px; font-size: 14px; color: #166534; font-weight: 500; }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="card-header">
+    <div class="logo">ARETSI <span>All Real Estate Title Solutions</span></div>
+  </div>
+  <div class="card-body">
+    <div id="form-state">
+      <p class="greeting">Hi <strong id="seller-name">—</strong>,</p>
+      <p class="address" id="seller-address"></p>
+      <p class="question">Thanks for letting us know. When do you expect to list your property?<br><span style="font-size:13px;color:var(--sub);">We'll follow up around that date.</span></p>
+      <div class="form-group">
+        <label for="listing-date">Estimated listing date</label>
+        <input type="date" id="listing-date" required>
+      </div>
+      <button class="btn-submit" id="submit-btn" onclick="submitDate()">Confirm date →</button>
+      <p class="footer-note">Questions? Call us at <strong>(813) 876-4373</strong>.</p>
+    </div>
+
+    <div class="success-state" id="success-state">
+      <span class="success-icon">✅</span>
+      <div class="success-title">Got it, thank you!</div>
+      <p class="success-msg">We've noted your estimated listing date for<br><strong id="success-address"></strong>.</p>
+      <span class="success-date" id="success-date-display"></span>
+      <p class="success-msg" style="margin-top:14px;">We'll be in touch when you're ready to move forward.</p>
+    </div>
+
+    <div class="footer-contact">
+      <strong>ARETSI — All Real Estate Title Solutions</strong><br>
+      ☎ (813) 876-4373
+    </div>
+  </div>
+</div>
+
+<script>
+  const WEBHOOK_URL = 'WEBHOOK_PLACEHOLDER';
+
+  const params = new URLSearchParams(window.location.search);
+  const row    = params.get('row')    || '';
+  const name   = params.get('name')   || '';
+  const addr   = params.get('address') || params.get('addr') || '';
+
+  document.getElementById('seller-name').textContent    = name    || 'estimado cliente';
+  document.getElementById('seller-address').textContent = addr    || '';
+  document.getElementById('success-address').textContent = addr   || 'su propiedad';
+
+  // Set min date to today
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('listing-date').min = today;
+
+  function formatDate(dateStr) {
+    const [y, m, d] = dateStr.split('-');
+    const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    return `${months[parseInt(m)-1]} ${parseInt(d)}, ${y}`;
+  }
+
+  async function submitDate() {
+    const dateVal = document.getElementById('listing-date').value;
+    if (!dateVal) { alert('Por favor seleccione una fecha.'); return; }
+
+    const btn = document.getElementById('submit-btn');
+    btn.disabled = true;
+    btn.textContent = 'Enviando…';
+
+    try {
+      await fetch(WEBHOOK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ row, name, address: addr, listing_date: dateVal })
+      });
+    } catch(e) {
+      // proceed to success even on network error — webhook may still have received it
+    }
+
+    document.getElementById('success-date-display').textContent = formatDate(dateVal);
+    document.getElementById('form-state').style.display = 'none';
+    document.getElementById('success-state').style.display = 'block';
+  }
+</script>
+</body></html>
